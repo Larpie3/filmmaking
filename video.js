@@ -31,8 +31,8 @@ const videos = [
     date: "Sept 2026",
     description: "Out of Range",
     tags: ["cinematic", "movie", "2026"],
-    duration: "",
-    src: "https://video.harayasmp.fun/Group%20A%20-%2010%20Andre%20Laporte.mp4",
-    thumbnail: ""
+    duration: "0:00",
+    src: "https://video.harayasmp.fun/Group A - 10 Andre Laporte.mp4",
+    thumbnail: "https://via.placeholder.com/300"
   }
 ];
