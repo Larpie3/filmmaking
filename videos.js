@@ -5,8 +5,8 @@ window.VIDEOS = [
     date: "Sept 2026",
     description: "Out of Range",
     tags: ["cinematic", "movie", "2026"],
-    duration: "",
+    duration: "10:00",
     src: "https://video.harayasmp.fun/Group%20A%20-%2010%20Andre%20Laporte.mp4",
-    thumbnail: ""
+    thumbnail: "thumbnails/g-a-al.png"
   }
 ];
