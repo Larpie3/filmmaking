@@ -76,25 +76,26 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Render sidebar
-    sidebarList.innerHTML = "";
-    const catalog = window.VIDEOS || [];
-    const remainingVideos = catalog.filter(v => v.id !== video.id);
-    remainingVideos.forEach(rel => {
-      const sideItem = document.createElement("div");
-      sideItem.className = "sidebar-item";
-      sideItem.innerHTML = `
-        <div class="sidebar-thumb">
-          <img src="${rel.thumbnail && rel.thumbnail.trim() !== '' ? rel.thumbnail : fallbackThumb}" alt="${rel.title}">
-        </div>
-        <div class="sidebar-info">
-          <h4>${rel.title}</h4>
-          <small>${rel.date || ''}</small>
-        </div>
-      `;
-      sideItem.addEventListener("click", () => openVideo(rel));
-      sidebarList.appendChild(sideItem);
-    });
+    // Inside openVideo(video) in script.js:
+sidebarList.innerHTML = "";
+const catalog = window.VIDEOS || [];
+const remainingVideos = catalog.filter(v => v.id !== video.id);
+
+remainingVideos.forEach(rel => {
+  const sideItem = document.createElement("div");
+  sideItem.className = "sidebar-item";
+  sideItem.innerHTML = `
+    <div class="sidebar-thumb">
+      <img src="${rel.thumbnail && rel.thumbnail.trim() !== '' ? rel.thumbnail : fallbackThumb}" alt="${rel.title}">
+    </div>
+    <div class="sidebar-info">
+      <h4>${rel.title}</h4>
+      <small>${rel.date || ''}</small>
+    </div>
+  `;
+  sideItem.addEventListener("click", () => openVideo(rel));
+  sidebarList.appendChild(sideItem);
+});
 
     player.play().catch(() => {});
   }
