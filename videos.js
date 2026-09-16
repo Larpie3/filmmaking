@@ -8,5 +8,15 @@ window.VIDEOS = [
     duration: "10:00",
     src: "https://video.harayasmp.fun/Group%20A%20-%2010%20Andre%20Laporte.mp4",
     thumbnail: "thumbnails/g-a-al.png"
+  },
+  {
+    id: "michael-pisaro-group-a",
+    title: "Group A Michael Pisaro",
+    date: "Sept 2026",
+    description: "Kaon kay gamiton",
+    tags: ["cinematic", "movie", "2026"],
+    duration: "10:00",
+    src: "https://video.harayasmp.fun/GroupA-10MichaelPisaro.mp4",
+    thumbnail: ""
   }
 ];
