@@ -414,6 +414,82 @@ main {
   color: var(--text-faint);
   font-size: 12px;
 }
+/* Theater Mode Player Frame */
+.theater-player-frame {
+  width: 100%;
+  max-width: 1200px;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  margin: 1rem auto 2rem auto;
+}
+
+.theater-player-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Details and Suggested Videos Grid */
+.watch-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* Suggested Videos Container */
+.suggested-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 2rem;
+}
+
+.suggested-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Individual Suggested Cards */
+.sidebar-item {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-item:hover {
+  transform: translateY(-4px);
+  opacity: 0.9;
+}
+
+.sidebar-thumb img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.sidebar-info {
+  margin-top: 0.5rem;
+}
+
+.sidebar-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.sidebar-info small {
+  color: #888;
+  font-size: 0.85rem;
+}
 
 /* ---------- Responsive ---------- */
 
