@@ -25,23 +25,13 @@
 
 const VIDEOS = [
   {
-    id: "sample-welcome",
-    title: "Welcome to the Northbridge Media Archive",
-    date: "2026",
-    description: "This is a sample entry so you can see how a video card and watch page look. Replace this with your first real video by editing videos.js — see the instructions at the top of this file.",
-    tags: ["sample", "guide"],
-    duration: "0:30",
-    src: "videos/sample-welcome.mp4",
-    thumbnail: ""
-  },
-  {
-    id: "sample-second",
-    title: "A Second Example Entry",
-    date: "2026",
-    description: "Add as many entries as you like — the gallery and search update automatically. Delete these two sample entries once you've added your own videos.",
-    tags: ["sample"],
-    duration: "1:10",
-    src: "videos/sample-second.mp4",
-    thumbnail: ""
-  }
+  id: "andre-laporte-group-a",
+  title: "Group A Andre Laporte",
+  date: "Sept 2026",
+  description: "Out of Range",
+  tags: ["cinematic", "movie", "2026"],
+  duration: "",
+  src: "https://video.harayasmp.fun/Group%20A%20-%2010%20Andre%20Laporte.mp4",
+  thumbnail: ""
+}
 ];
