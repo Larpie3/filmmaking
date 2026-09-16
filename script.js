@@ -78,7 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Render sidebar
     sidebarList.innerHTML = "";
-    const remainingVideos = videos.filter(v => v.id !== video.id);
+    const catalog = window.VIDEOS || [];
+    const remainingVideos = catalog.filter(v => v.id !== video.id);
     remainingVideos.forEach(rel => {
       const sideItem = document.createElement("div");
       sideItem.className = "sidebar-item";
@@ -95,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebarList.appendChild(sideItem);
     });
 
-    player.play().catch(() => {}); // Autoplay if permitted
+    player.play().catch(() => {});
   }
 
   function showGallery() {
@@ -109,7 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       const query = e.target.value.toLowerCase().trim();
-      const filtered = videos.filter(v => {
+      const catalog = window.VIDEOS || [];
+      const filtered = catalog.filter(v => {
         const titleMatch = v.title.toLowerCase().includes(query);
         const descMatch = (v.description || "").toLowerCase().includes(query);
         const dateMatch = (v.date || "").toLowerCase().includes(query);
@@ -127,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showGallery();
   });
 
-  // Initial render
-  renderGallery(videos);
+  // Initial render using window.VIDEOS safely
+  const initialCatalog = window.VIDEOS || [];
+  renderGallery(initialCatalog);
 });
