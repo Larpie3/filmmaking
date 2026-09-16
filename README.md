@@ -1,4 +1,4 @@
-# Northbridge Media Archive — School Video Gallery
+# St. Cecilia Media Archive — School Video Gallery
 
 A watch-only video gallery site: one big searchable catalog, YouTube-style
 watch page, no uploading/commenting/likes — visitors can only browse and
