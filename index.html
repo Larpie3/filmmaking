@@ -47,19 +47,21 @@
       </p>
     </section>
 
-    <!-- WATCH VIEW -->
+    <!-- WATCH VIEW (THEATER MODE) -->
     <section id="view-watch" class="view" hidden>
       <button type="button" id="back-btn" class="back-btn">
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 15L7 10l5.5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Back to the archive
       </button>
 
-      <div class="watch-layout">
-        <div class="watch-main">
-          <div class="player-frame">
-            <video id="player" controls controlsList="nodownload" playsinline></video>
-          </div>
+      <!-- Full-Width Theater Player -->
+      <div class="theater-player-frame">
+        <video id="player" controls controlsList="nodownload" playsinline></video>
+      </div>
 
+      <!-- Details and Suggested Videos Below -->
+      <div class="watch-details-container">
+        <div class="watch-info">
           <h1 id="watch-title" class="watch-title"></h1>
           <div class="watch-meta">
             <span id="watch-date"></span>
@@ -70,10 +72,10 @@
           <p id="watch-description" class="watch-description"></p>
         </div>
 
-        <aside class="watch-sidebar">
+        <section class="suggested-section">
           <h2 class="sidebar-heading">More from the archive</h2>
-          <div id="sidebar-list" class="sidebar-list"></div>
-        </aside>
+          <div id="sidebar-list" class="suggested-grid"></div>
+        </section>
       </div>
     </section>
 
