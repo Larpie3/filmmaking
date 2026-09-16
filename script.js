@@ -1,11 +1,9 @@
-(function () {
-  "use strict";
-
-  const grid = document.getElementById("gallery-grid");
+document.addEventListener("DOMContentLoaded", () => {
+  const galleryGrid = document.getElementById("gallery-grid");
+  const searchInput = document.getElementById("search-input");
   const resultCount = document.getElementById("result-count");
   const emptyState = document.getElementById("empty-state");
-  const searchInput = document.getElementById("search-input");
-
+  
   const viewGallery = document.getElementById("view-gallery");
   const viewWatch = document.getElementById("view-watch");
   const backBtn = document.getElementById("back-btn");
@@ -19,182 +17,116 @@
   const watchDescription = document.getElementById("watch-description");
   const sidebarList = document.getElementById("sidebar-list");
 
-  const byId = new Map((window.VIDEOS || []).map(v => [v.id, v]));
+  // SVG Fallback for items with empty thumbnails
+  const fallbackThumb = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="100%" height="100%" fill="%231a1a1a"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23666666" font-family="sans-serif" font-size="20">SCC Media Archive</text></svg>`;
 
-  // ---------- helpers ----------
-
-  function thumbHTML(video, opts) {
-    opts = opts || {};
-    const durationBadge = video.duration
-      ? `<span class="card-duration" data-duration-for="${video.id}">${video.duration}</span>`
-      : `<span class="card-duration" data-duration-for="${video.id}" hidden></span>`;
-
-    const image = video.thumbnail
-      ? `<img src="${video.thumbnail}" alt="" loading="lazy">`
-      : `<div class="card-thumb-fallback">${escapeHTML(video.title)}</div>`;
-
-    const playIcon = opts.withPlayIcon !== false
-      ? `<div class="card-play" aria-hidden="true">
-           <svg viewBox="0 0 48 48" fill="none">
-             <circle cx="24" cy="24" r="23" fill="rgba(18,21,27,0.55)" stroke="white" stroke-opacity="0.6"/>
-             <path d="M19 15L33 24L19 33V15Z" fill="white"/>
-           </svg>
-         </div>`
-      : "";
-
-    return `<div class="${opts.sidebarStyle ? 'sidebar-thumb' : 'card-thumb'}">
-        ${image}
-        ${playIcon}
-        ${durationBadge}
-      </div>`;
-  }
-
-  function escapeHTML(str) {
-    const div = document.createElement("div");
-    div.textContent = str == null ? "" : String(str);
-    return div.innerHTML;
-  }
-
-  function formatDuration(seconds) {
-    seconds = Math.round(seconds);
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${String(s).padStart(2, "0")}`;
-  }
-
-  // Progressive enhancement: if a video has no manual duration, probe the
-  // file itself for its length once the card is on screen. Fails silently
-  // if the file isn't there yet (e.g. sample entries).
-  function probeDuration(video) {
-    if (video.duration || video._probed) return;
-    video._probed = true;
-    const probe = document.createElement("video");
-    probe.preload = "metadata";
-    probe.src = video.src;
-    probe.addEventListener("loadedmetadata", () => {
-      if (isFinite(probe.duration)) {
-        const text = formatDuration(probe.duration);
-        document.querySelectorAll(`[data-duration-for="${video.id}"]`).forEach(el => {
-          el.textContent = text;
-          el.hidden = false;
-        });
-      }
-    });
-    probe.addEventListener("error", () => {});
-  }
-
-  // ---------- gallery rendering ----------
-
-  function renderGallery(list) {
-    grid.innerHTML = "";
-    resultCount.textContent = list.length === 1
-      ? "1 video in the archive"
-      : `${list.length} videos in the archive`;
-    emptyState.hidden = list.length !== 0;
-
-    list.forEach((video, i) => {
-      const card = document.createElement("a");
-      card.href = `#watch=${encodeURIComponent(video.id)}`;
-      card.className = "video-card";
-      card.style.animationDelay = `${Math.min(i, 10) * 30}ms`;
-      card.innerHTML = `
-        ${thumbHTML(video)}
-        <h2 class="card-title">${escapeHTML(video.title)}</h2>
-        <p class="card-meta">${escapeHTML(video.date || "")}</p>
-      `;
-      grid.appendChild(card);
-      probeDuration(video);
-    });
-  }
-
-  function matchesQuery(video, query) {
-    if (!query) return true;
-    const haystack = [video.title, video.date, ...(video.tags || [])]
-      .join(" ")
-      .toLowerCase();
-    return haystack.includes(query);
-  }
-
-  function applySearch() {
-    const query = searchInput.value.trim().toLowerCase();
-    const all = window.VIDEOS || [];
-    renderGallery(all.filter(v => matchesQuery(v, query)));
-  }
-
-  // ---------- watch view ----------
-
-  function renderSidebar(currentId) {
-    const others = (window.VIDEOS || []).filter(v => v.id !== currentId);
-    sidebarList.innerHTML = "";
-    others.forEach(video => {
-      const item = document.createElement("a");
-      item.href = `#watch=${encodeURIComponent(video.id)}`;
-      item.className = "sidebar-item";
-      item.innerHTML = `
-        ${thumbHTML(video, { sidebarStyle: true })}
-        <div class="sidebar-info">
-          <h3 class="sidebar-title">${escapeHTML(video.title)}</h3>
-          <p class="sidebar-date">${escapeHTML(video.date || "")}</p>
-        </div>
-      `;
-      sidebarList.appendChild(item);
-      probeDuration(video);
-    });
-  }
-
-  function showWatch(id) {
-    const video = byId.get(id);
-    if (!video) {
-      location.hash = "";
+  function renderGallery(items) {
+    galleryGrid.innerHTML = "";
+    
+    if (!items || items.length === 0) {
+      emptyState.hidden = false;
+      resultCount.textContent = "0 entries";
       return;
     }
 
+    emptyState.hidden = true;
+    resultCount.textContent = `${items.length} ${items.length === 1 ? 'entry' : 'entries'}`;
+
+    items.forEach(video => {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-thumb">
+          <img src="${video.thumbnail && video.thumbnail.trim() !== '' ? video.thumbnail : fallbackThumb}" alt="${video.title}" loading="lazy">
+          ${video.duration ? `<span class="card-duration">${video.duration}</span>` : ''}
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">${video.title}</h2>
+          <div class="card-meta">
+            <span>${video.date || ''}</span>
+          </div>
+          <p class="card-desc">${video.description || ''}</p>
+        </div>
+      `;
+
+      card.addEventListener("click", () => openVideo(video));
+      galleryGrid.appendChild(card);
+    });
+  }
+
+  function openVideo(video) {
+    viewGallery.hidden = true;
+    viewWatch.hidden = false;
+    window.scrollTo(0, 0);
+
     player.src = video.src;
-    if (video.thumbnail) player.poster = video.thumbnail;
     watchTitle.textContent = video.title;
     watchDate.textContent = video.date || "";
     watchDuration.textContent = video.duration || "";
-    watchDuration.hidden = !video.duration;
     watchDescription.textContent = video.description || "";
 
-    watchTags.innerHTML = (video.tags || [])
-      .map(tag => `<span class="tag-pill">${escapeHTML(tag)}</span>`)
-      .join("");
+    // Render tags
+    watchTags.innerHTML = "";
+    if (video.tags && video.tags.length > 0) {
+      video.tags.forEach(tag => {
+        const tagSpan = document.createElement("span");
+        tagSpan.className = "tag";
+        tagSpan.textContent = `#${tag}`;
+        watchTags.appendChild(tagSpan);
+      });
+    }
 
-    renderSidebar(id);
+    // Render sidebar
+    sidebarList.innerHTML = "";
+    const remainingVideos = videos.filter(v => v.id !== video.id);
+    remainingVideos.forEach(rel => {
+      const sideItem = document.createElement("div");
+      sideItem.className = "sidebar-item";
+      sideItem.innerHTML = `
+        <div class="sidebar-thumb">
+          <img src="${rel.thumbnail && rel.thumbnail.trim() !== '' ? rel.thumbnail : fallbackThumb}" alt="${rel.title}">
+        </div>
+        <div class="sidebar-info">
+          <h4>${rel.title}</h4>
+          <small>${rel.date || ''}</small>
+        </div>
+      `;
+      sideItem.addEventListener("click", () => openVideo(rel));
+      sidebarList.appendChild(sideItem);
+    });
 
-    viewGallery.hidden = true;
-    viewWatch.hidden = false;
-    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+    player.play().catch(() => {}); // Autoplay if permitted
   }
 
   function showGallery() {
     player.pause();
-    player.removeAttribute("src");
-    player.load();
+    player.src = "";
     viewWatch.hidden = true;
     viewGallery.hidden = false;
   }
 
-  // ---------- routing ----------
-
-  function route() {
-    const hash = location.hash;
-    const match = hash.match(/^#watch=(.+)$/);
-    if (match) {
-      showWatch(decodeURIComponent(match[1]));
-    } else {
-      showGallery();
-    }
+  // Search filter listener
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const filtered = videos.filter(v => {
+        const titleMatch = v.title.toLowerCase().includes(query);
+        const descMatch = (v.description || "").toLowerCase().includes(query);
+        const dateMatch = (v.date || "").toLowerCase().includes(query);
+        const tagMatch = v.tags && v.tags.some(t => t.toLowerCase().includes(query));
+        return titleMatch || descMatch || dateMatch || tagMatch;
+      });
+      renderGallery(filtered);
+    });
   }
 
-  window.addEventListener("hashchange", route);
-  backBtn.addEventListener("click", () => { location.hash = ""; });
-  brandLink.addEventListener("click", (e) => { e.preventDefault(); location.hash = ""; });
-  searchInput.addEventListener("input", applySearch);
+  // Navigation handlers
+  if (backBtn) backBtn.addEventListener("click", showGallery);
+  if (brandLink) brandLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    showGallery();
+  });
 
-  // ---------- init ----------
-
-  applySearch();
-  route();
-})();
+  // Initial render
+  renderGallery(videos);
+});
